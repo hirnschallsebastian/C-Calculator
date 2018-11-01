@@ -5,10 +5,10 @@
 #ifndef C_CALCULATOR_RESIZE_H
 #define C_CALCULATOR_RESIZE_H
 
-int resizeInt(int *, int, int);
+int resizeInt(int **, int, int);
 
-int resizeDouble(double *, int, int);
+int resizeDouble(double **, int, int);
 
-int resizeString(char *, int, int);
+int resizeString(char **, int, int);
 
 #endif //C_CALCULATOR_RESIZE_H

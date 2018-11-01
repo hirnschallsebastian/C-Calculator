@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include "resize.h"
 
+//each function takes a pointer to a pointer(vector) and doubles its size
+
 int resizeInt(int **ptr, int ptrc, int ptri) {
     //if ptr is too small double its size
     if (ptri == ptrc - 1) {

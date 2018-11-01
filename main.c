@@ -8,8 +8,9 @@
 int main() {
     char calc[200];
 
-    scanf("%s", calc);
-    printf("=%f", solve(calc, strlen(calc)));
-
+    while (1) {
+        scanf(" %[^\n]s", calc);
+        printf("=%f\n", solve(calc, (int) strlen(calc)));
+    }
     return 0;
 }

@@ -3,7 +3,7 @@
 //
 
 #include "solve.h"
-
+#include "resize.h"
 #include <stdlib.h>
 
 #define DEFAULT_SIZE 20 //default vector length
@@ -24,8 +24,7 @@ double solve(char *calc, int calcc) {
     int tmpi = -1;
 
     int i, j, k;
-
-
+    double result;
 
     //parse calc from right to left to accommodate for adding a negative number
     for (i = calcc - 1; i >= 0; --i) {
@@ -66,38 +65,54 @@ double solve(char *calc, int calcc) {
                                 tmp[++tmpi] = calc[k];
                             }
                             numbersc *= resizeDouble(numbers, numbersc, numbersi);
-                            numbers[++numbersi] = solve(tmp, tmpi);
+                            numbers[++numbersi] = solve(tmp, tmpi + 1);
 
                             break; //quit loop
                         }
                     }
+                    //skip rest of (...)
+                    i -= tmpi + 2;
+                    tmpi = -1;
                     break;
-                case 40:    // (
+                case 40:    // ignore (
+                case 32:    // ignore space
                     break;
                 default:
                     return 0; // when the current char is nor supported return 0
             }
         }
-
-
     }
     if (tmpi >= 0) {
         tmp[tmpi + 1] = '\0';
         numbersc *= resizeDouble(numbers, numbersc, numbersi);
         reverse(tmp, tmpi);
         numbers[++numbersi] = atof(tmp);
-    } else {
-        return 0; // return 0 when calc ends with arithmetic operation
     }
 
+
+    //calculate result from left to right and mult before add
+    for (i = multi; i >= 0; --i) {
+        numbers[mult[i]] *= numbers[mult[i] + 1];
+    }
+    for (i = addi; i >= 0; --i) {
+        if (i > 0 && add[i - 1] != add[i] - 1) // next is *
+        {   //since * was done first and the result is always stored in the number to the right of the operation
+            //the number two the right of this + is not the correct result of the * it should be so we have to find
+            // the correct result and work with it like normal.
+            numbers[add[i - 1] + 1] += numbers[add[i] + 1];
+        } else {   // nochting s-1+3+2*5/2*(3+2)-7pecial just add the two numbers around the +
+            numbers[add[i]] += numbers[add[i] + 1];
+        }
+    }
+
+    result = numbers[0];
 
     //free allocated memory
     free(mult);
     free(add);
     free(numbers);
     free(tmp);
-
-    return 0;
+    return result;
 }
 
 void reverse(char *str, int len) {
@@ -108,35 +123,4 @@ void reverse(char *str, int len) {
         str[i] = str[len - i];
         str[len - i] = tmp;
     }
-}
-
-
-int resizeInt(int *ptr, int ptrc, int ptri) {
-    //if ptr is too small double its size
-    if (ptri == ptrc - 1) {
-        if (!realloc(ptr, 2 * ptrc * sizeof(int))) //double tmp size
-            return 0;
-        return 2;
-    }
-    return 1;
-}
-
-int resizeDouble(double *ptr, int ptrc, int ptri) {
-    //if ptr is too small double its size
-    if (ptri == ptrc - 1) {
-        if (!realloc(ptr, 2 * ptrc * sizeof(double))) //double tmp size
-            return 0;
-        return 2;
-    }
-    return 1;
-}
-
-int resizeString(char *ptr, int ptrc, int ptri) {
-    //if ptr is too small double its size
-    if (ptri == ptrc - 2) { //-2 to add '\0' to char array
-        if (!realloc(ptr, 2 * ptrc * sizeof(char))) //double tmp size
-            return 0;
-        return 2;
-    }
-    return 1;
 }

@@ -115,7 +115,7 @@ double solve(char *calc, int calcc) {
         else if (i == 0) {
             // if the current + is the last one the number to the right is either num[0]
             // or the correct value from * is stored in num[0]
-            numbers[0] += numbers[add[i] - 1];
+            numbers[0] += numbers[add[i] + 1];
         }
         else {   // nothing special just add the two numbers around the +
             numbers[add[i]] += numbers[add[i] + 1];

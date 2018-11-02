@@ -2,8 +2,74 @@ language: c
 compiler:
 - clang
 - gcc
-- gpp
-- g++
+matrix:
+  include:
+  # works on Precise and Trusty
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - libreadline6-dev
+        packages:
+        - libreadline6
+        - g++-4.9
+        - cmake
+    env:
+    - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+  # works on Precise and Trusty
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - libreadline6-dev
+        packages:
+        - libreadline6
+        - g++-5
+        - cmake
+    env:
+    - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+  # works on Precise and Trusty
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - libreadline6-dev
+        packages:
+        - libreadline6
+        - g++-6
+        - cmake
+    env:
+    - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+  # works on Precise and Trusty
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - libreadline6-dev
+        packages:
+        - libreadline6
+        - g++-7
+        - cmake
+    env:
+    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+  - os: osx
+    addons:
+      homebrew:
+        packages:
+        - cmake
+        update: true
+
+before_install:
+- eval "${MATRIX_EVAL}"
+
 before_script:
 # create a build folder for the out-of-source build
 - mkdir build
@@ -18,7 +84,3 @@ script:
 - make
 # if the project uses ctest we can run the tests like this
 #- make test
-os:
-  -osx
-  -linux
-  -windows

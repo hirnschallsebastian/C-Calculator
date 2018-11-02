@@ -4,4 +4,20 @@ compiler:
 - gcc
 - gpp
 - g++
-os: osx
+script: cmake . && make && make test
+matrix:
+  include:
+  -os: osx
+    addons:
+      homebrew:
+        packages:
+        - cmake
+        update: true
+  -os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-5
+  -os: windows

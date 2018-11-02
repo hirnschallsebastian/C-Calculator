@@ -68,6 +68,8 @@ matrix:
         - readline
         update: true
 
+  - os: windows
+
 before_install:
 - eval "${MATRIX_EVAL}"
 

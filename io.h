@@ -7,4 +7,7 @@
 
 void clear();
 
+void help();
+
+
 #endif //C_CALCULATOR_IO_H

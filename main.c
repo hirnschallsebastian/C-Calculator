@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "solve.h"
+#include "plot.h"
 
 
 int main(int argc, char *argv[]) {
@@ -43,6 +44,8 @@ int main(int argc, char *argv[]) {
             return 0;
         else if (!strcmp(input, "help"))
             help();
+        else if (!strcmp(input, "plot"))
+            plot(NULL, NULL);
         else
             printf(" =%f\n", solve(input, (int) strlen(input)));
         free(input);

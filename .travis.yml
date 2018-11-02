@@ -4,20 +4,20 @@ compiler:
 - gcc
 - gpp
 - g++
-script: cmake . && make && make test
-matrix:
-  include:
-  -os: osx
-    addons:
-      homebrew:
-        packages:
-        - cmake
-        update: true
-  -os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - g++-5
-  -os: windows
+before_script:
+# create a build folder for the out-of-source build
+- mkdir build
+# switch to build directory
+- cd build
+# run cmake; here we assume that the project's
+# top-level CMakeLists.txt is located at '..'
+- cmake ..
+
+script:
+# once CMake has done its job we just build using make as usual
+- make
+# if the project uses ctest we can run the tests like this
+- make test
+os:
+  -osx
+  -linux

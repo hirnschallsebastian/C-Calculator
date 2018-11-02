@@ -12,3 +12,9 @@
 - [ ] solve equation systems using matrices (numsolve)
 - [ ] solve polynomial functions (polysolve)
 - [ ] plot(x,y) support
+
+### Compile:
+CMAKE:        
+```mkdir build && cd build && cmake .. && make```          
+GCC:        
+```gcc main.c io.c plot.c solve.c resize.c -lreadline -o ccalc```          

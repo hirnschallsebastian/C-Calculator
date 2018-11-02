@@ -10,8 +10,8 @@ matrix:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - libreadline6-dev
         packages:
+        - libreadline6-dev
         - libreadline6
         - g++-4.9
         - cmake
@@ -24,8 +24,8 @@ matrix:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - libreadline6-dev
         packages:
+        - libreadline6-dev
         - libreadline6
         - g++-5
         - cmake
@@ -38,8 +38,8 @@ matrix:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - libreadline6-dev
         packages:
+        - libreadline6-dev
         - libreadline6
         - g++-6
         - cmake
@@ -52,8 +52,8 @@ matrix:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        - libreadline6-dev
         packages:
+        - libreadline6-dev
         - libreadline6
         - g++-7
         - cmake
@@ -65,6 +65,7 @@ matrix:
       homebrew:
         packages:
         - cmake
+        - readline
         update: true
 
 before_install:

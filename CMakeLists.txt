@@ -11,4 +11,4 @@ SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}
 
 
 add_executable(ccalc main.c solve.c solve.h resize.c resize.h io.c io.h plot.c plot.h)
-target_link_libraries(ccalc readline)
+target_link_libraries(ccalc readline math)

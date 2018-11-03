@@ -9,5 +9,6 @@ void clear();
 
 void help();
 
+int startsWith(char *, char *);
 
 #endif //C_CALCULATOR_IO_H

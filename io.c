@@ -3,6 +3,7 @@
 //
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void clear() {
     //clear the screen
@@ -18,4 +19,19 @@ void help() {
            "Options:\n"
            "-h\t\tshow this screen\n"
            "-s <calc>\tprint result of calculation and exit\n");
+}
+
+int startsWith(char *input, char *start) {
+    int i, j = 0, len = (int) strlen(start);
+
+    for (i = 0; i < (int) strlen(input); ++i) {
+        if (input[i] == ' ')
+            ++j;
+        else if (i - j == len)
+            return i; //when we reach this point input starts with start
+        else if (input[i] != start[i - j])
+            return 0;   //the chars do not match => input does not start with start
+    }
+    //loop ended without return => input = start
+    return 1;
 }

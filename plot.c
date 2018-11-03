@@ -6,41 +6,88 @@
 
 #include <stdio.h>
 #include <wchar.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include "resize.h"
+#include "solve.h"
+
+#define DEFAULT_SIZE 20 //default vector length
 
 #define WIDTH 100
 #define HEIGHT 30
 #define Y_INTERVALL 3
 #define X_INTERVALL 10
 
-int plot(double *x, double *y, int len) {
-    //wprintf(L"\n\n%lc",0x250C);
-    //wprintf(L"%lc",0x2500);
-    //wprintf(L"%lc\n",0x2510);
 
-    //wprintf(L"%lc ",0x2502);
-    //wprintf(L"%lc\n",0x2502);
+extern double x;
 
-    //wprintf(L"%lc",0x2514);
-    //wprintf(L"%lc",0x2500);
-    //wprintf(L"%lc\n\n",0x2518);
-
-    //todo: interpolate the input arrays if too small. use x with length 100 for now
-
-    int i, j, k;
-    double min = 99999, max = -99999, yIntervall;
-    //find max y for scaling axes
-
-    for (i = 0; i < len; ++i) {
-        if (y[i] <= min)
-            min = y[i];
-        if (y[i] >= max)
-            max = y[i];
+int plot(char *input, int start) {
+    // parse input
+    int i, j, k, argc = 0;
+    double min = -10, max = 10, ymin = 9999, ymax = -9999, yIntervall, intervall;
+    double y[WIDTH];
+    char tmp[20];
+    int tmpi = -1;
+    char *calc = malloc(DEFAULT_SIZE * sizeof(char));
+    int calcc = DEFAULT_SIZE;
+    int calci = -1;
+    for (i = start; i < strlen(input); ++i) {
+        if (argc == 0 && input[i] == ',') {
+            ++argc;
+        }
+        else if (argc == 0) {
+            calcc *= resizeString(&calc, calcc, calci);
+            calc[++calci] = input[i];
+        }
+        else if (argc == 1 && input[i] == ':') {
+            ++argc;
+            tmp[++tmpi] = '\0';
+            min = atof(tmp);
+            tmpi = -1;
+        }
+        else if (argc == 1) {
+            tmp[++tmpi] = input[i];
+        }
+        else if (argc == 2 && input[i] == ')') {
+            tmp[++tmpi] = '\0';
+            max = atof(tmp);
+            break;
+        }
+        else if (argc == 2) {
+            tmp[++tmpi] = input[i];
+        }
     }
 
-    yIntervall = (max - min) / HEIGHT;
+    intervall = (max - min) / WIDTH;
+
+    for (i = 0; i < WIDTH; ++i) {
+        x = min + i * intervall;
+        y[i] = x * x - 13;
+    }
+
+    for (i = 0; i < WIDTH; ++i) {
+        if (y[i] <= ymin)
+            ymin = y[i];
+        if (y[i] >= ymax)
+            ymax = y[i];
+    }
+    if (ymax == ymin) {
+        ymax = fabs(ymax) * 2;
+        ymin = fabs(ymin) * -2;
+        yIntervall = (ymax - ymin) / HEIGHT;
+    }
+    else if (fabs(ymin) > fabs(ymax)) {
+        yIntervall = (2 * fabs(ymin)) / HEIGHT;
+    }
+    else {
+        yIntervall = (2 * fabs(ymax)) / HEIGHT;
+    }
 
 
-    int lastJ = -WIDTH / 2;
+
+
     for (i = HEIGHT / 2; i >= -HEIGHT / 2; --i) {
         for (j = -WIDTH / 2; j < WIDTH / 2; ++j) {
             if (y[j + WIDTH / 2] <= (i + 0.5) * yIntervall && y[j + WIDTH / 2] >= (i - 0.5) * yIntervall) {
@@ -69,4 +116,6 @@ int plot(double *x, double *y, int len) {
         }
         printf("\n");
     }
+    free(calc);
+    return 0;
 }

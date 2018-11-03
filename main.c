@@ -11,6 +11,7 @@
 //for testing
 #include <math.h>
 
+int findFunction(char *, int);
 
 int main(int argc, char *argv[]) {
     char *input, prompt[3];
@@ -41,24 +42,30 @@ int main(int argc, char *argv[]) {
             continue;
         add_history(input);
 
-        if (!strcmp(input, "clear"))
-            clear();
-        else if (!strcmp(input, "exit"))
-            return 0;
-        else if (!strcmp(input, "help"))
-            help();
-        else if (!strcmp(input, "plot")) {
-            //for testing
-            double y[100];
-            for (i = 0; i < 100; ++i) {
-                double x = (double) (i - 50) / 10;
-                y[i] = sin(x);
-            }
-            plot(NULL, y, 100);
-        }
-        else
+        if (!findFunction(input, (int) strlen(input)))
             printf(" =%f\n", solve(input, (int) strlen(input)));
+
         free(input);
+    }
+
+    return 0;
+}
+
+int findFunction(char *input, int len) {
+    int i;
+    if (startsWith(input, "clear")) {
+        clear();
+        return 1;
+    }
+    else if (startsWith(input, "exit"))
+        exit(0);
+    else if (startsWith(input, "help")) {
+        help();
+        return 1;
+    }
+    else if (startsWith(input, "plot(")) {
+        plot(input, startsWith(input, "plot("));
+        return 1;
     }
     return 0;
 }

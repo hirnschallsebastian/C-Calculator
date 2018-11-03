@@ -8,6 +8,8 @@
 
 #define DEFAULT_SIZE 20 //default vector length
 
+double x;
+
 double solve(char *calc, int calcc) {
     //vectors to store numbers and arithmetic operations
     //naming:
@@ -30,7 +32,6 @@ double solve(char *calc, int calcc) {
     int i, j, k;
     // result to return
     double result;
-
     //parse calc from right to left to accommodate for adding a negative number
     for (i = calcc - 1; i >= 0; --i) {
         //if calc[i] is number or . add it to tmp for conversion to double

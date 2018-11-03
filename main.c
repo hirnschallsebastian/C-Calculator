@@ -8,6 +8,9 @@
 #include "solve.h"
 #include "plot.h"
 
+//for testing
+#include <math.h>
+
 
 int main(int argc, char *argv[]) {
     char *input, prompt[3];
@@ -44,8 +47,15 @@ int main(int argc, char *argv[]) {
             return 0;
         else if (!strcmp(input, "help"))
             help();
-        else if (!strcmp(input, "plot"))
-            plot(NULL, NULL);
+        else if (!strcmp(input, "plot")) {
+            //for testing
+            double y[100];
+            for (i = 0; i < 100; ++i) {
+                double x = (double) (i - 50) / 10;
+                y[i] = sin(x);
+            }
+            plot(NULL, y, 100);
+        }
         else
             printf(" =%f\n", solve(input, (int) strlen(input)));
         free(input);

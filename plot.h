@@ -5,6 +5,6 @@
 #ifndef C_CALCULATOR_PLOT_H
 #define C_CALCULATOR_PLOT_H
 
-int plot(double *, double *);
+int plot(double *, double *, int);
 
 #endif //C_CALCULATOR_PLOT_H

@@ -8,6 +8,7 @@
   - input as string
   - support for + - * / and ()
   - use variables to store exact results and use later on
+  - support for pow using ^
 - [ ] support for sin,cos,abs,sqrt...
 - [ ] solve equation systems using matrices (numsolve)
 - [ ] solve polynomial functions (polysolve)

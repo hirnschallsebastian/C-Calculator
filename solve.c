@@ -18,6 +18,9 @@ double solve(char *calc, int calcc) {
     //  *ptr  ... vector
     //   ptrc ... length of vector
     //   ptri ... index of last element in vector
+    int *power = malloc(DEFAULT_SIZE * sizeof(int));
+    int powerc = DEFAULT_SIZE;
+    int poweri = -1;
     int *mult = malloc(DEFAULT_SIZE * sizeof(int));
     int multc = DEFAULT_SIZE;
     int multi = -1;
@@ -76,6 +79,10 @@ double solve(char *calc, int calcc) {
             }
 
             switch (calc[i]) {
+                case 94: // ^
+                    powerc *= resizeInt(&power, powerc, poweri);
+                    power[++poweri] = numbersi;
+                    break;
                 case 45: // - mult last number with (-1) and do case 43 (+)
                     numbers[numbersi] *= -1;
                 case 43: // + add current number index to add vector
@@ -106,6 +113,7 @@ double solve(char *calc, int calcc) {
                     i -= tmpi + 2;
                     tmpi = -1;
                     break;
+                case 44:    // ignore ,
                 case 40:    // ignore (
                 case 32:    // ignore space
                     break;
@@ -135,13 +143,35 @@ double solve(char *calc, int calcc) {
     }
 
 
-    //calculate result from left to right. mult before add
+    //calculate result from left to right. pow before mult before add
     //this is somewhat complicated since we parsed the string from right to left
-    //so all indices get smaller from left to right and the mult/add vector stores the value of the next
+    //so all indices get smaller from left to right and the power/mult/add vector stores the value of the next
     //(right) number
     //we store each result inplace of the right number. the left one stays as it is
+    for (i = poweri; i >= 0; --i) {
+        numbers[power[i]] = pow(numbers[power[i] + 1], numbers[power[i]]); //math.h pow function
+    }
     for (i = multi; i >= 0; --i) {
-        numbers[mult[i]] *= numbers[mult[i] + 1];
+        k = 0; // k != 0 <=> next op is pow
+        //check if pow was done first and result is not where it should be
+        for (j = poweri; j >= 0; --j) {
+            if (power[j] == mult[i] - 1) // next op is pow
+            {
+                k = 1;
+            }
+            else if (k > 0 && power[j] == mult[i] - 1 - k) {
+                ++k;
+            }
+            else if (k > 0 && power[j] != mult[i] - 1 - k) {
+                break;
+            }
+        }
+        if (k > 0) {
+            numbers[power[j + 1]] *= numbers[mult[i] + 1];
+        }
+        else {
+            numbers[mult[i]] *= numbers[mult[i] + 1];
+        }
     }
     for (i = addi; i >= 0; --i) {
         if (i > 0 && add[i - 1] != add[i] - 1) // next is *

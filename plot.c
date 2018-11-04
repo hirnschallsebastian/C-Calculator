@@ -86,7 +86,7 @@ int plot(char *input, int start) {
         yIntervall = (2 * fabs(ymax)) / HEIGHT;
     }
 
-
+    printf("y-intervall: %f\nx-intervall: %f\n", yIntervall * Y_INTERVALL, intervall * X_INTERVALL);
 
 
     for (i = HEIGHT / 2; i >= -HEIGHT / 2; --i) {

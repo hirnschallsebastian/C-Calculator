@@ -35,6 +35,7 @@ int plot(char *input, int start) {
     int calci = -1;
     for (i = start; i < strlen(input); ++i) {
         if (argc == 0 && input[i] == ',') {
+            calc[++calci] = '\0';
             ++argc;
         }
         else if (argc == 0) {

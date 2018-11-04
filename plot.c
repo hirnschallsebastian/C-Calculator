@@ -64,7 +64,7 @@ int plot(char *input, int start) {
 
     for (i = 0; i < WIDTH; ++i) {
         x = min + i * intervall;
-        y[i] = x * x - 13;
+        y[i] = solve(calc, (int) strlen(calc));
     }
 
     for (i = 0; i < WIDTH; ++i) {

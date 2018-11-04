@@ -5,6 +5,8 @@
 #include "solve.h"
 #include "resize.h"
 #include <stdlib.h>
+#include <math.h>
+#include "io.h"
 
 #define DEFAULT_SIZE 20 //default vector length
 
@@ -29,23 +31,47 @@ double solve(char *calc, int calcc) {
     int tmpc = DEFAULT_SIZE;
     int tmpi = -1;
     //for loops
-    int i, j, k;
+    int i, j, k, type = 0; // type 0=default, -1= text, 1=number
     // result to return
     double result;
     //parse calc from right to left to accommodate for adding a negative number
     for (i = calcc - 1; i >= 0; --i) {
         //if calc[i] is number or . add it to tmp for conversion to double
         if ((calc[i] < 58 && calc[i] > 47) || calc[i] == 46) {
+            if (type == -1)
+                return 0; //error mixed numbers and text
             tmpc *= resizeString(&tmp, tmpc, tmpi);
             tmp[++tmpi] = calc[i];
-        } else {
+            type = 1;
+        }//if calc[i] is a...z add to tmp
+        else if (calc[i] > 96 && calc[i] < 123) {
+            if (type == 1)
+                return 0; //error mixed numbers and text
+            tmpc *= resizeString(&tmp, tmpc, tmpi);
+            tmp[++tmpi] = calc[i];
+            type = -1;
+        }
+        else {
             //if the tmp array is not empty but the current
             //char is no number convert tmp to double and reset it
             if (tmpi >= 0) {
                 tmp[tmpi + 1] = '\0';
                 numbersc *= resizeDouble(&numbers, numbersc, numbersi);
                 reverse(tmp, tmpi);
-                numbers[++numbersi] = atof(tmp);
+                if (type == 1) {
+                    numbers[++numbersi] = atof(tmp);
+                }
+                else if (type == -1) {
+                    if (startsWith(tmp, "x") == 1) // tmp = x
+                    {
+                        numbers[++numbersi] = x;
+                    }
+                    else if (startsWith(tmp, "sin")) {
+                        numbers[numbersi] = sin(numbers[numbersi]);
+                        // when () are used it is replaces with the result before sin() is called
+                    }
+                }
+                type = 0;
                 tmpi = -1;
             }
 
@@ -93,7 +119,19 @@ double solve(char *calc, int calcc) {
         tmp[tmpi + 1] = '\0';
         numbersc *= resizeDouble(&numbers, numbersc, numbersi);
         reverse(tmp, tmpi);
-        numbers[++numbersi] = atof(tmp);
+        if (type == 1) {
+            numbers[++numbersi] = atof(tmp);
+        }
+        else if (type == -1) {
+            if (startsWith(tmp, "x") == 1) // tmp = x
+            {
+                numbers[++numbersi] = x;
+            }
+            else if (startsWith(tmp, "sin")) {
+                numbers[numbersi] = sin(numbers[numbersi]);
+                // when () are used it is replaces with the result before sin() is called
+            }
+        }
     }
 
 

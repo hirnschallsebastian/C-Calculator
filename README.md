@@ -11,7 +11,7 @@
 - [ ] support for sin,cos,abs,sqrt...
 - [ ] solve equation systems using matrices (numsolve)
 - [ ] solve polynomial functions (polysolve)
-- [ ] plot(x,y) support
+- [x] plot(f(x),xmin:xmax) support
 
 ### Compile:
 CMAKE:        

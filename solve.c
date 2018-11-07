@@ -21,22 +21,31 @@ double solve(char *calc, int calcc) {
     int *power = malloc(DEFAULT_SIZE * sizeof(int));
     int powerc = DEFAULT_SIZE;
     int poweri = -1;
+
     int *mult = malloc(DEFAULT_SIZE * sizeof(int));
     int multc = DEFAULT_SIZE;
     int multi = -1;
+
     int *add = malloc(DEFAULT_SIZE * sizeof(int));
     int addc = DEFAULT_SIZE;
     int addi = -1;
+
     double *numbers = malloc(DEFAULT_SIZE * sizeof(double));
     int numbersc = DEFAULT_SIZE;
     int numbersi = -1;
+
     char *tmp = malloc(DEFAULT_SIZE * sizeof(char));
     int tmpc = DEFAULT_SIZE;
     int tmpi = -1;
+
     //for loops
-    int i, j, k, type = 0; // type 0=default, -1= text, 1=number
+    int i, j, k, l, type = 0; // type 0=default, -1= text, 1=number
+
     // result to return
     double result;
+
+
+
     //parse calc from right to left to accommodate for adding a negative number
     for (i = calcc - 1; i >= 0; --i) {
         //if calc[i] is number or . add it to tmp for conversion to double
@@ -62,6 +71,7 @@ double solve(char *calc, int calcc) {
                 numbersc *= resizeDouble(&numbers, numbersc, numbersi);
                 reverse(tmp, tmpi);
                 if (type == 1) {
+                    double test = atof(tmp);
                     numbers[++numbersi] = atof(tmp);
                 }
                 else if (type == -1) {
@@ -79,7 +89,7 @@ double solve(char *calc, int calcc) {
             }
 
             switch (calc[i]) {
-                case 94: // ^
+                case '^': // ^
                     powerc *= resizeInt(&power, powerc, poweri);
                     power[++poweri] = numbersi;
                     break;
@@ -97,16 +107,23 @@ double solve(char *calc, int calcc) {
                     break;
                 case 41:    // )
                     // find matching ( and call solve function for (...)
-                    for (j = 0; j < i; ++j) {
-                        if (calc[j] == 40) {
-                            for (k = j + 1; k < i; ++k) {
-                                tmpc *= resizeString(&tmp, tmpc, tmpi);
-                                tmp[++tmpi] = calc[k];
+                    l = 0; //number of ) before mathing (
+                    for (j = i; j >= 0; --j) {
+                        if (calc[j] == ')')
+                            ++l;
+                        else if (calc[j] == 40) {
+                            if (--l == 0) {  //check to see if the ( found is the right one
+                                for (k = j + 1; k < i; ++k) {
+                                    tmpc *= resizeString(&tmp, tmpc, tmpi);
+                                    tmp[++tmpi] = calc[k];
+                                }
+                                tmp[tmpi + 1] = '\0';
+                                numbersc *= resizeDouble(&numbers, numbersc, numbersi);
+                                numbers[++numbersi] = solve(tmp, tmpi + 1);
+                                tmpi = -1;
+                                i = j + 1;
+                                break; //quit loop
                             }
-                            numbersc *= resizeDouble(&numbers, numbersc, numbersi);
-                            numbers[++numbersi] = solve(tmp, tmpi + 1);
-
-                            break; //quit loop
                         }
                     }
                     //skip rest of (...)
@@ -149,7 +166,11 @@ double solve(char *calc, int calcc) {
     //(right) number
     //we store each result inplace of the right number. the left one stays as it is
     for (i = poweri; i >= 0; --i) {
-        numbers[power[i]] = pow(numbers[power[i] + 1], numbers[power[i]]); //math.h pow function
+        //check if x is positiv for all x^y otherwise pow return nan
+        if (numbers[power[i] + 1] < 0)
+            numbers[power[i]] = pow(numbers[power[i] + 1] * (-1), numbers[power[i]]) * (-1); //math.h pow function
+        else
+            numbers[power[i]] = pow(numbers[power[i] + 1], numbers[power[i]]); //math.h pow function
     }
     for (i = multi; i >= 0; --i) {
         k = 0; // k != 0 <=> next op is pow

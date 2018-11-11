@@ -18,4 +18,6 @@
 CMAKE:        
 ```mkdir build && cd build && cmake .. && make```          
 GCC:        
-```gcc main.c io.c plot.c solve.c resize.c -lreadline -o ccalc```          
+```gcc main.c io.c plot.c solve.c resize.c -lreadline -o ccalc```        
+
+If you do not have [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) installed you have to add ```-DCOMPATIBILITY``` to the compiler flags.

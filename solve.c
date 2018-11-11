@@ -6,6 +6,7 @@
 #include "resize.h"
 #include <stdlib.h>
 #include <math.h>
+#include <complex.h>
 #include "io.h"
 
 #define DEFAULT_SIZE 20 //default vector length
@@ -29,6 +30,10 @@ double solve(char *calc, int calcc) {
     int *add = malloc(DEFAULT_SIZE * sizeof(int));
     int addc = DEFAULT_SIZE;
     int addi = -1;
+
+    int *minus = malloc(DEFAULT_SIZE * sizeof(int));    //for multiple - in a row to support pow
+    int minusc = DEFAULT_SIZE;
+    int minusi = -1;
 
     double *numbers = malloc(DEFAULT_SIZE * sizeof(double));
     int numbersc = DEFAULT_SIZE;
@@ -94,7 +99,12 @@ double solve(char *calc, int calcc) {
                     power[++poweri] = numbersi;
                     break;
                 case 45: // - mult last number with (-1) and do case 43 (+)
-                    numbers[numbersi] *= -1;
+                    if (numbers[numbersi] >= 0)
+                        numbers[numbersi] *= -1;
+                    else {
+                        minusc *= resizeInt(&minus, minusc, minusi);  //save and * with minus one later
+                        minus[++minusi] = addi + 1;
+                    }
                 case 43: // + add current number index to add vector
                     addc *= resizeInt(&add, addc, addi);
                     add[++addi] = numbersi;
@@ -166,11 +176,12 @@ double solve(char *calc, int calcc) {
     //(right) number
     //we store each result inplace of the right number. the left one stays as it is
     for (i = poweri; i >= 0; --i) {
-        //check if x is positiv for all x^y otherwise pow return nan
-        if (numbers[power[i] + 1] < 0)
-            numbers[power[i]] = pow(numbers[power[i] + 1] * (-1), numbers[power[i]]) * (-1); //math.h pow function
+        double complex ctmp = cpow(numbers[power[i] + 1], numbers[power[i]]);
+
+        if (fabs(cimag(ctmp)) > 10e-7) //check if ctmp is a complex number
+            return NAN;
         else
-            numbers[power[i]] = pow(numbers[power[i] + 1], numbers[power[i]]); //math.h pow function
+            numbers[power[i]] = creal(ctmp);
     }
     for (i = multi; i >= 0; --i) {
         k = 0; // k != 0 <=> next op is pow
@@ -195,21 +206,37 @@ double solve(char *calc, int calcc) {
         }
     }
     for (i = addi; i >= 0; --i) {
-        if (i > 0 && add[i - 1] != add[i] - 1) // next is *
+        //check if there is a minus left:
+        int neg = 0;
+        for (j = 0; j <= minusi; ++j) {
+            if (minus[j] == i) {
+                neg = 1;
+                break;
+            }
+        }
+        if (numbersi >= add[i] + 1 && i > 0 && add[i - 1] != add[i] - 1) // next is *
         {   //since * was done first and the result is always stored in the number to the right of the operation
             //the number to the right of this + is not the correct result of the * it should be so we have to find
             //the correct result and work with it like normal.
             //the correct number is left of the next +
+            if (neg)
+                numbers[add[i - 1] + 1] *= -1;
             numbers[add[i - 1] + 1] += numbers[add[i] + 1];
         }
-        else if (i == 0) {
+        else if (numbersi >= add[i] + 1 && i == 0) {
             // if the current + is the last one the number to the right is either num[0]
             // or the correct value from * is stored in num[0]
+            if (neg)
+                numbers[0] *= -1;
             numbers[0] += numbers[add[i] + 1];
         }
-        else {   // nothing special just add the two numbers around the +
+        else if (numbersi >= add[i] + 1) {   // nothing special just add the two numbers around the +
+            if (neg)
+                numbers[add[i]] *= -1;
             numbers[add[i]] += numbers[add[i] + 1];
         }
+        else if (neg)
+            numbers[0] *= -1;
     }
 
     result = numbers[0];

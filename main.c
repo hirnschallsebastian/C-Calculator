@@ -11,12 +11,20 @@
 //for testing
 #include <math.h>
 
+
 int findFunction(char *, int);
 
 int main(int argc, char *argv[]) {
-    char *input, prompt[3];
+    char *input, prompt[14];
     int i;
+//compile with -DCOMPATIBILITY if nerdfont is not installed on your system
+#ifdef COMPATIBILITY
     snprintf(prompt, sizeof(prompt), "> ");
+#else
+    snprintf(prompt, sizeof(prompt), "\x1b[34m\uf460\x1b[0m ");
+#endif
+
+
     using_history();
 
     for (i = 1; i < argc; ++i)   //parse commandline arguments

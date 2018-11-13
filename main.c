@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
             continue;
         add_history(input);
 
-        if (!findFunction(input, (int) strlen(input)))
+        if (!findFunction(input))
             printf(" =%f\n", solve(input, (int) strlen(input)));
 
         free(input);

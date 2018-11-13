@@ -11,7 +11,7 @@
 
 #define DEFAULT_SIZE 20 //default vector length
 
-double x;
+double x, ans;
 
 double solve(char *calc, int calcc) {
     //vectors to store numbers and arithmetic operations
@@ -76,13 +76,15 @@ double solve(char *calc, int calcc) {
                 numbersc *= resizeDouble(&numbers, numbersc, numbersi);
                 reverse(tmp, tmpi);
                 if (type == 1) {
-                    double test = atof(tmp);
                     numbers[++numbersi] = atof(tmp);
                 }
                 else if (type == -1) {
                     if (startsWith(tmp, "x") == 1) // tmp = x
                     {
                         numbers[++numbersi] = x;
+                    }
+                    else if (startsWith(tmp, "ans")) {
+                        numbers[++numbersi] = ans;
                     }
                     else if (startsWith(tmp, "sin")) {
                         numbers[numbersi] = sin(numbers[numbersi]);
@@ -162,9 +164,12 @@ double solve(char *calc, int calcc) {
             {
                 numbers[++numbersi] = x;
             }
+            else if (startsWith(tmp, "ans")) {
+                numbers[++numbersi] = ans;
+            }
             else if (startsWith(tmp, "sin")) {
                 numbers[numbersi] = sin(numbers[numbersi]);
-                // when () are used it is replaces with the result before sin() is called
+                // when () are used it is replaced with the result before sin() is called
             }
         }
     }
@@ -246,6 +251,7 @@ double solve(char *calc, int calcc) {
     free(add);
     free(numbers);
     free(tmp);
+    ans = result;
     return result;
 }
 

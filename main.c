@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <readline/readline.h>
-#include <readline/history.h>
 
 #include "io.h"
 #include "solve.h"
@@ -12,18 +11,19 @@
 #include <math.h>
 
 
-int findFunction(char *, int);
+int findFunction(char *);
 
 int main(int argc, char *argv[]) {
-    char *input, prompt[14];
+    char *input;
     int i;
-//compile with -DCOMPATIBILITY if nerdfont is not installed on your system
-#ifdef COMPATIBILITY
-    snprintf(prompt, sizeof(prompt), "> ");
-#else
-    snprintf(prompt, sizeof(prompt), "\x1b[34m\uf460\x1b[0m ");
-#endif
 
+
+    //compile with -DCOMPATIBILITY if nerdfont is not installed on your system
+#ifdef COMPATIBILITY
+    char prompt[3] =  "> \0";
+#else
+    char prompt[6] = "\uf460 \0";
+#endif
 
     using_history();
 
@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (1) {
+
         input = readline(prompt);
         if (!input)
             continue;
@@ -59,8 +60,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-int findFunction(char *input, int len) {
-    int i;
+int findFunction(char *input) {
     if (startsWith(input, "clear")) {
         clear();
         return 1;

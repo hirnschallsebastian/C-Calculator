@@ -13,6 +13,7 @@
 - [ ] solve equation systems using matrices (numsolve)
 - [ ] solve polynomial functions (polysolve)
 - [x] plot(f(x),xmin:xmax) support
+- [x] display time it takes to compute result (see 
 
 ### Compile:
 CMAKE:        
@@ -20,4 +21,8 @@ CMAKE:
 GCC:        
 ```gcc main.c io.c plot.c solve.c resize.c -lreadline -o ccalc```        
 
-If you do not have [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) installed you have to add ```-DCOMPATIBILITY``` to the compiler flags.
+|Flag                  | Info             |
+|----------------------|------------------|
+|```-DCOMPATIBILITY``` |In case you do not have [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) installed|
+|```-DTIME```|Display time it takes to compute result|
+

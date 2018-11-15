@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <readline/readline.h>
+#include <time.h>
+#include <sys/ioctl.h>
+
 
 #include "io.h"
 #include "solve.h"
@@ -16,7 +19,12 @@ int findFunction(char *);
 int main(int argc, char *argv[]) {
     char *input;
     int i;
-
+#if TIME
+    double result;
+    time_t t1,t2;
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+#endif
 
     //compile with -DCOMPATIBILITY if nerdfont is not installed on your system
 #ifdef COMPATIBILITY
@@ -51,8 +59,24 @@ int main(int argc, char *argv[]) {
             continue;
         add_history(input);
 
-        if (!findFunction(input))
+        if (!findFunction(input)) {
+#if TIME
+            t1=clock();
+            result = solve(input,(int) strlen(input));
+            t2=clock();
+            printf(" \uf6fb%f%*.2f", result,
+                    w.ws_col-((int)floor(log10(abs((int)result))) + 13),
+                    (double)(t2-t1)/CLOCKS_PER_SEC);
+#if COMPATIBILITY
+            printf("s\n");
+#else
+            printf(" \ufa1a\n");
+#endif
+#else
             printf(" =%f\n", solve(input, (int) strlen(input)));
+#endif
+
+        }
 
         free(input);
     }
